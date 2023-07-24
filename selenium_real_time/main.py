@@ -13,42 +13,29 @@ XPATH_LIBRARY = {
 }
 
 
-
 def print_help():
-    print(f'''This is a python selenium refresher: \n
-          d.get("https://en.wikipedia.org/wiki/Main_Page") \n
+    print(f'''This is a python selenium refresher: 
+          d.get("https://en.wikipedia.org/wiki/Main_Page") 
           //tag[contains(@attribute, 'substring')]
-          //div[contains(text(), 'Google')]"
+          //div[contains(text(), 'Google')]"# actions = ActionChains(d)
+            actions.send_keys(Keys.ENTER).perform()
+            d.switch_to.active_element
+            with open('f2.txt', 'w', encoding="utf-8") as f: f.write(d.page_source)
           
-          How to use: \n
+          How to use: 
           --f for find_element(By.XPATH, '//button')
-          ie: --f target_xpath -> e = find_element(By.XPATH, '//target_xpath')\n
+          ie: --f target_xpath -> e = find_element(By.XPATH, '//target_xpath')
           --fs for find_elementS(By.XPATH, '//button'
           driver.find_elements(By.XPATH, '//button')
           
-          \n   
+            
           ''')
 
 
 def create_driver():
     import undetected_chromedriver as uc
 
-    # opt = Options()
-    # opt.add_argument("start-maximized")
-    # opt.add_argument("--disable-extensions")
-    # opt.add_experimental_option("prefs", {
-    #     "profile.default_content_setting_values.media_stream_mic": 1,
-    #     "profile.default_content_setting_values.media_stream_camera": 1,
-    #     "profile.default_content_setting_values.geolocation": 1,
-    #     "profile.default_content_setting_values.notifications": 1
-    # })
-
-    chrome_options = uc.ChromeOptions()
-    prefs = {"profile.default_content_setting_values.media_stream_mic" : 1}
-    chrome_options.add_experimental_option("prefs",prefs)
-    driver = uc.Chrome(headless=False, use_subprocess=False,chrome_options=chrome_options)
-
-    # driver = uc.Chrome(headless=False, use_subprocess=False, desired_capabilities=desired_cap)
+    driver = uc.Chrome(headless=False, use_subprocess=False)
 
     return driver
 
@@ -111,7 +98,7 @@ def execution_wheel(d):
         execute_func(r)
 
 
-def test_func():
+def grant_permissions():
     d.execute_cdp_cmd(
         "Browser.grantPermissions",
         {
@@ -122,15 +109,8 @@ def test_func():
     )
 
 
-    # e.send_keys(Keys.ENTER)
-    # d.switch_to.active_element
-    # d.switch_to.active_el
 
-# common funcs
-# actions = ActionChains(d)
-# actions.send_keys(Keys.ENTER).perform()
-# d.switch_to.active_element
-# with open('f2.txt', 'w', encoding="utf-8") as f: f.write(d.page_source)
+
 
 
 def run():
@@ -139,7 +119,8 @@ def run():
 
     get_target_url(d, TARGET_URL)
 
-    test_func()
+    #grant_permissions()  # microphone, geo location, camera
+
     execution_wheel(d)
 
 if __name__ == '__main__':
