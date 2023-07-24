@@ -3,6 +3,9 @@ from selenium.webdriver.common.alert import Alert
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
+from time import sleep
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+
 
 TARGET_URL = 'https://speechnotes.co/dictate/'
 XPATH_LIBRARY = {
@@ -40,7 +43,12 @@ def create_driver():
     #     "profile.default_content_setting_values.notifications": 1
     # })
 
-    driver = uc.Chrome(headless=False, use_subprocess=False)
+    chrome_options = uc.ChromeOptions()
+    prefs = {"profile.default_content_setting_values.media_stream_mic" : 1}
+    chrome_options.add_experimental_option("prefs",prefs)
+    driver = uc.Chrome(headless=False, use_subprocess=False,chrome_options=chrome_options)
+
+    # driver = uc.Chrome(headless=False, use_subprocess=False, desired_capabilities=desired_cap)
 
     return driver
 
@@ -103,9 +111,27 @@ def execution_wheel(d):
         execute_func(r)
 
 
+def test_func():
+    d.execute_cdp_cmd(
+        "Browser.grantPermissions",
+        {
+            "origin": TARGET_URL    ,   # e.g https://www.google.com
+            "permissions": ["geolocation", "audioCapture", "displayCapture", "videoCapture",
+                            "videoCapturePanTiltZoom"]
+        },
+    )
+
+
+    # e.send_keys(Keys.ENTER)
+    # d.switch_to.active_element
+    # d.switch_to.active_el
+
+# common funcs
 # actions = ActionChains(d)
 # actions.send_keys(Keys.ENTER).perform()
-#d.switch_to.active_element
+# d.switch_to.active_element
+# with open('f2.txt', 'w', encoding="utf-8") as f: f.write(d.page_source)
+
 
 def run():
     global d  # used to allow to assign variables in exec()
@@ -113,8 +139,8 @@ def run():
 
     get_target_url(d, TARGET_URL)
 
+    test_func()
     execution_wheel(d)
-
 
 if __name__ == '__main__':
     run()
