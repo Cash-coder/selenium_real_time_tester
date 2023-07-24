@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/speech_to_text_app.iml" filepath="$PROJECT_DIR$/.idea/speech_to_text_app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/selenium_real_time_testing.iml" filepath="$PROJECT_DIR$/.idea/selenium_real_time_testing.iml" />
     </modules>
   </component>
 </project>

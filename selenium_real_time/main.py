@@ -1,4 +1,4 @@
-
+import selenium
 
 def test_driver():
     import undetected_chromedriver as uc
