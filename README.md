@@ -20,4 +20,5 @@ Future improvements stack:
 
     -fc -> function click
     -fr -> function refresh
+    -fg -> function get url
     ...
