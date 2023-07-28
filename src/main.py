@@ -12,6 +12,14 @@ import pyautogui
 import my
 import time
 
+
+
+# use API
+# -remove the a
+# - with exec ?
+# -sending chain as argument
+# - con alt shift to back cursor to last position
+
 TARGET_URL = 'https://speechnotes.co/dictate/'
 XPATH_LIBRARY = {
     'record_button': '//div[@id="start_button"]',
