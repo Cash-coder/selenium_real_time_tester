@@ -7,9 +7,11 @@ from time import sleep
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 
-TARGET_URL = 'https://speechnotes.co/dictate/'
+TARGET_URL = 'https://www.deepl.com/write#en/this%20is%20a%20test%20text'
 XPATH_LIBRARY = {
-    'record_button': '//div[@id="start_button"]'
+    'accept_cookies_banner': '//*[@data-testid="cookie-banner-strict-accept-selected"]',
+    'input_area': '(//p[@_d-id])[1]',
+    'output_area': '(//p[@_d-id])[2]',
 }
 
 
