@@ -82,27 +82,6 @@ def record_and_paste(d):
     # print_grammar_correction(d, text)
 
 
-def print_grammar_correction(d, text):
-
-    # open grammar page
-    d.get(TARGET_URLS['grammar_url'])
-
-    # paste text
-    d.find_element(By.XPATH, '//textarea').send_keys(text)
-
-    # wait for grammar correction
-    sleep(1)
-
-    # get corrected text
-    corrected_text = d.find_element(By.XPATH, '//textarea').text
-
-    # paste corrected text
-    paste_text(corrected_text)
-
-    # go back to dictation page
-    d.get(TARGET_URLS['dictation_url'])
-
-
 def get_text(d):
     tm = d.find_element(By.XPATH, XPATH_LIBRARY['text_mirror'])
     wait_until_started_to_change(d, XPATH_LIBRARY['text_mirror'])
@@ -157,12 +136,12 @@ def open_tabs(d):
     d.switch_to.window(d.window_handles[0])
 
 
-
 def print_help():
     print(f'''This is a python selenium refresher: 
           d.get("https://en.wikipedia.org/wiki/Main_Page") 
           //tag[contains(@attribute, 'substring')]
-          //div[contains(text(), 'Google')]"# actions = ActionChains(d)
+          //div[contains(text(), 'Google')]"
+            actions = ActionChains(d)
             actions.send_keys(Keys.ENTER).perform()
             d.switch_to.active_element
             with open('f2.txt', 'w', encoding="utf-8") as f: f.write(d.page_source)
@@ -264,8 +243,8 @@ def grant_permissions():
     )
 
 
-def open_second_tab(d):
-    d.execute_script(f'''window.open("{TARGET_URLS['grammar_url']}","_blank");''')
+def open_second_tab(d, url):
+    d.execute_script(f'''window.open("{url}","_blank");''')
 
 
 # works well only when there are only 2 tabs present
@@ -278,19 +257,63 @@ def switch_tabs(d):
             d.switch_to.window(tab)
 
 
-def print_grammar_correction(text):
+def switch_to_american_english(d):
     switch_tabs(d)
 
-    # clean old input text
+    # click button to switch language
+    d.find_element(By.XPATH, '//button[@id="headlessui-listbox-button-10"]').click()
+
+    sleep(0.5)
+
+    # click in american
+    d.find_element(By.XPATH, '//span[contains(text(), "American")]').click()
+
+
+def print_grammar_correction(text):
+    switch_tabs(d)
 
     # send text
     # include xpath in path library Json
     d.find_element(By.XPATH, '//d-textarea[contains(@class, "lmt__source_textarea")]').send_keys(text)
 
+    # DEBT: create dynamic wait until the icon of 'working' starts and disappears
     sleep(1.5)
 
     # copy text
-    d.find_element(By.XPATH, '//d-textarea[contains(@class, "lmt__textarea lmt__target_textarea")]').click()
+    grammar_text = get_grammar_text(d)
+
+    print(grammar_text)
+
+    clean_old_input(d)
+
+    switch_tabs(d)
+
+
+def get_grammar_text():
+
+    # click in output field
+    # d.find_element(By.XPATH, '//d-textarea[contains(@class, "lmt__textarea lmt__target_textarea")]').click()
+    # Cn + c to copy
+    # actions = ActionChains(d)
+    # actions.key_down(Keys.CONTROL).send_keys('a').key_up(Keys.CONTROL)
+    # actions.key_down(Keys.CONTROL).send_keys('c').key_up(Keys.CONTROL)
+    # actions.perform()
+    # print(pyperclip.paste())
+
+    text = d.find_element(By.XPATH, '//div[@_d-id="8"]/p').text
+
+    return text
+
+
+def clean_old_input(d):
+    # click in input area
+    d.find_element(By.XPATH, '//d-textarea[contains(@class, "lmt__source_textarea")]').click()
+
+    # clean with Cn A + delete
+    actions = ActionChains(d)
+    actions.key_down(Keys.CONTROL).send_keys('a').key_up(Keys.CONTROL)
+    actions.send_keys(Keys.DELETE)
+    actions.perform()
 
 
 def run():
@@ -299,12 +322,18 @@ def run():
     d = create_normal_driver()
 
     get_target_url(d, TARGET_URLS['dictation_url'])
-    open_second_tab(d)
+
+    open_second_tab(d, TARGET_URLS['grammar_url'])
+
+    switch_to_american_english(d)
 
     grant_permissions()  # microphone, geo location, camera
 
     execution_wheel(d)
 
+
+# update create driver
+# import funcs used in print_grammar.. like switch tabs
 
 if __name__ == '__main__':
     run()
